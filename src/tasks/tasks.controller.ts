@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Query,
   Param,
   Patch,
   Post,
@@ -11,14 +12,19 @@ import { TasksService } from './tasks.service';
 import { Tasks, taskStatus } from './tasks.model';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { createTaskDto } from './dto/create-task.dto';
+import { GetTaskFilterDTO } from './dto/search-task.dto';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private tasksService: TasksService) {}
   @Get()
-  getAllTasks(): Tasks[] {
+  getTasks(@Query() filterTaskDTO: GetTaskFilterDTO): Tasks[] {
+    if (Object.keys(filterTaskDTO).length) {
+      return this.tasksService.getFilteredTasks(filterTaskDTO);
+    } else {
+      return this.tasksService.getAllTasks();
+    }
     // console.log('hello');
-    return this.tasksService.getAllTasks();
   }
 
   @Get('/:id')
