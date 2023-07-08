@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { PipeTransform, BadRequestException } from '@nestjs/common';
-import { taskStatus } from '../tasks.model';
+import { taskStatus } from '../task-status.enum';
 export class TaskStatusValidationPipe implements PipeTransform {
   readonly StatusValuesAllowed = [
     taskStatus.DONE,
