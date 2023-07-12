@@ -1,17 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Task } from './task.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { taskStatus } from './task-status.enum';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-@Entity()
-export class TaskRepository extends Repository<Task> {
-  @PrimaryGeneratedColumn()
-  id: number;
+@Injectable()
+export class TaskRepository {
+  constructor(
+    @InjectRepository(Task)
+    private taskEntity: Repository<Task>,
+  ) {}
 
-  @Column()
-  description: string;
-
-  @Column()
-  status: taskStatus;
+  async getTaskbyId(id: number): Promise<Task> {
+    return await this.taskEntity.findOne({ where: { id } });
+  }
 }

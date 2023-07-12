@@ -24,7 +24,7 @@ export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get('/:id')
-  getTaskbyId(@Param('id', ParseIntPipe) id: number): Promise<Task> {
+  async getTaskbyId(@Param('id', ParseIntPipe) id: number): Promise<Task> {
     return this.tasksService.getTaskbyId(id);
   }
 
