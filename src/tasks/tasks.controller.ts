@@ -23,9 +23,35 @@ import { Task } from './task.entity';
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
+  @Get()
+  async getTasks(
+    @Query(ValidationPipe) filterDTO: GetTaskFilterDTO,
+  ): Promise<Task[]> {
+    return this.tasksService.getTasks(filterDTO);
+  }
+
   @Get('/:id')
   async getTaskbyId(@Param('id', ParseIntPipe) id: number): Promise<Task> {
     return this.tasksService.getTaskbyId(id);
+  }
+
+  @Post()
+  @UsePipes(ValidationPipe)
+  async createTask(@Body() createTaskDto: createTaskDto): Promise<Task> {
+    return await this.tasksService.createTask(createTaskDto);
+  }
+
+  @Delete('/:id')
+  deleteTaskbyId(@Param('id', ParseIntPipe) id: number): void {
+    this.tasksService.deleteTaskbyId(id);
+  }
+
+  @Patch('/:id/status')
+  async updateTaskStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', TaskStatusValidationPipe) status: taskStatus,
+  ): Promise<Task> {
+    return this.tasksService.updateTaskStatus(id, status);
   }
 
   // @Get()
