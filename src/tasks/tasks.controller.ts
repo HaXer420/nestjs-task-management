@@ -20,6 +20,8 @@ import { createTaskDto } from './dto/create-task.dto';
 import { GetTaskFilterDTO } from './dto/search-task.dto';
 import { TaskStatusValidationPipe } from './pipes/task-status-validation';
 import { Task } from './task.entity';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/auth.entity';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
@@ -29,32 +31,40 @@ export class TasksController {
   @Get()
   async getTasks(
     @Query(ValidationPipe) filterDTO: GetTaskFilterDTO,
+    @GetUser() user: User,
   ): Promise<Task[]> {
-    return this.tasksService.getTasks(filterDTO);
+    return this.tasksService.getTasks(filterDTO, user);
   }
 
   @Get('/:id')
-  async getTaskbyId(@Param('id', ParseIntPipe) id: number): Promise<Task> {
-    return this.tasksService.getTaskbyId(id);
+  async getTaskbyId(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    return this.tasksService.getTaskbyId(id, user);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  async createTask(@Body() createTaskDto: createTaskDto): Promise<Task> {
-    return await this.tasksService.createTask(createTaskDto);
+  async createTask(
+    @Body() createTaskDto: createTaskDto,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    return await this.tasksService.createTask(createTaskDto, user);
   }
 
   @Delete('/:id')
-  deleteTaskbyId(@Param('id', ParseIntPipe) id: number): void {
-    this.tasksService.deleteTaskbyId(id);
+  deleteTaskbyId(@Param('id', ParseIntPipe) id: number, user: User): void {
+    this.tasksService.deleteTaskbyId(id, user);
   }
 
   @Patch('/:id/status')
   async updateTaskStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body('status', TaskStatusValidationPipe) status: taskStatus,
+    user: User,
   ): Promise<Task> {
-    return this.tasksService.updateTaskStatus(id, status);
+    return this.tasksService.updateTaskStatus(id, status, user);
   }
 
   // @Get()
