@@ -34,6 +34,17 @@ export class UserRepository {
       }
     }
   }
+  async validateLogin(authCredentialDTO: AuthCredentialDTO): Promise<string> {
+    const { username, password } = authCredentialDTO;
+
+    const user = await this.authEntity.findOne({ where: { username } });
+
+    if (user && (await user.validatePassword(password))) {
+      return username;
+    } else {
+      return null;
+    }
+  }
 
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);

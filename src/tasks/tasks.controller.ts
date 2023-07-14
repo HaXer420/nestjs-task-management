@@ -10,7 +10,9 @@ import {
   UsePipes,
   ParseIntPipe,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { TasksService } from './tasks.service';
 import { taskStatus } from './task-status.enum';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,6 +22,7 @@ import { TaskStatusValidationPipe } from './pipes/task-status-validation';
 import { Task } from './task.entity';
 
 @Controller('tasks')
+@UseGuards(AuthGuard())
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
